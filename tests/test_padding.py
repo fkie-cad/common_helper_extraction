@@ -4,14 +4,13 @@ from common_helper_extraction import cut_at_padding
 from common_helper_extraction.padding import _find_next_data_block
 
 
-# ToDo test padding at beginning of file
-# (b'\xffafter', 1, b'\xff', [(1, b'after')])
 @pytest.mark.parametrize('input_data, padding_min_length, padding_pattern, expected', [
     (b'no_padding', 1, b'\x00', [(0, b'no_padding')]),
     (b'before\x00after', 1, b'\x00', [(0, b'before'), (7, b'after')]),
     (b'before\x00\x00after', 1, b'\x00', [(0, b'before'), (8, b'after')]),
     (b'before\x00\x00middle\x00after', 1, b'\x00', [(0, b'before'), (8, b'middle'), (15, b'after')]),
-    (b'before\x00after', 2, b'\x00', [(0, b'before\x00after')])
+    (b'before\x00after', 2, b'\x00', [(0, b'before\x00after')]),
+    (b'\xffafter', 1, b'\xff', [(1, b'after')])
 ])
 def test_cut_at_padding(input_data, padding_min_length, padding_pattern, expected):
     result = cut_at_padding(input_data, padding_min_length=padding_min_length, padding_pattern=padding_pattern)
