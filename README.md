@@ -1,4 +1,7 @@
 # common_helper_extraction
+
+[![Build Status](https://travis-ci.org/fkie-cad/common_helper_extraction.svg?branch=master)](https://travis-ci.org/fkie-cad/common_helper_extraction)
+
 Extraction support functions
 
 ## Function Overview
