@@ -5,7 +5,7 @@ python:
   - "3.7"
 # command to install dependencies
 install: 
-  - "pip install pytest-pep8 pytest-cov codecov"
+  - "pip install --upgrade pytest pytest-pep8 pytest-cov codecov"
 # command to run tests
 script: "pytest --cov-config .coveragerc --cov=./"
 after_success:
