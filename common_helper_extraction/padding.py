@@ -29,7 +29,8 @@ def cut_at_padding(input_data, padding_min_length=4, padding_pattern=b'\x00'):
                 result.append((area_start, input_data[area_start:area_end]))
             area_start = _find_next_data_block(input_data, area_end, padding_pattern)
     except ValueError:
-        result.append((area_start, input_data[area_start:]))
+        if area_start < len(input_data):
+            result.append((area_start, input_data[area_start:]))
 
     return result
 

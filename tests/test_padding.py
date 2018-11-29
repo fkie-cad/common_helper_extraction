@@ -10,7 +10,9 @@ from common_helper_extraction.padding import _find_next_data_block
     (b'before\x00\x00after', 1, b'\x00', [(0, b'before'), (8, b'after')]),
     (b'before\x00\x00middle\x00after', 1, b'\x00', [(0, b'before'), (8, b'middle'), (15, b'after')]),
     (b'before\x00after', 2, b'\x00', [(0, b'before\x00after')]),
-    (b'\xffafter', 1, b'\xff', [(1, b'after')])
+    (b'\xffafter', 1, b'\xff', [(1, b'after')]),
+    (b'before\x00', 1, b'\x00', [(0, b'before')]),
+    (b'\x00\xff\x00\xffmiddle\x00\xffafter', 1, b'\x00\xff', [(4, b'middle'), (12, b'after')]),
 ])
 def test_cut_at_padding(input_data, padding_min_length, padding_pattern, expected):
     result = cut_at_padding(input_data, padding_min_length=padding_min_length, padding_pattern=padding_pattern)
