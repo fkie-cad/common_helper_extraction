@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fkie-cad/common_helper_extraction.svg?branch=master)](https://travis-ci.org/fkie-cad/common_helper_extraction)
 [![codecov](https://codecov.io/gh/fkie-cad/common_helper_extraction/branch/master/graph/badge.svg)](https://codecov.io/gh/fkie-cad/common_helper_extraction)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f50240ca6aff4537a00f929aa6a71396)](https://www.codacy.com/app/weidenba/common_helper_extraction?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fkie-cad/common_helper_extraction&amp;utm_campaign=Badge_Grade)
 
 Extraction support functions
 
