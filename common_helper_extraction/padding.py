@@ -1,6 +1,6 @@
 '''
     common_helper_extraction
-    Copyright (C) 2018  Fraunhofer FKIE
+    Copyright (C) 2018-2019  Fraunhofer FKIE
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
