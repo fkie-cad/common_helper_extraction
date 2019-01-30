@@ -15,14 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-import lzma
+from lzma import LZMACompressor, FORMAT_ALONE, FILTER_LZMA1
 
 
 def generate_lzma_stream(data, dict_size=33554432, lc=3, lp=1, pb=1):
     lzma_filters = [
-        {'id': lzma.FILTER_LZMA1, 'dict_size': dict_size, 'lc': lc, 'lp': lp, 'pb': pb}
+        {'id': FILTER_LZMA1, 'dict_size': dict_size, 'lc': lc, 'lp': lp, 'pb': pb}
     ]
-    compressor = lzma.LZMACompressor(format=lzma.FORMAT_ALONE, filters=lzma_filters)
+    compressor = LZMACompressor(format=FORMAT_ALONE, filters=lzma_filters)
     lzma_stream = []
     lzma_stream.append(compressor.compress(data))
     lzma_stream.append(compressor.flush())
