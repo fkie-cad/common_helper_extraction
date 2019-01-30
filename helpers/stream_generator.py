@@ -18,7 +18,7 @@
 from lzma import LZMACompressor, FORMAT_ALONE, FILTER_LZMA1
 
 
-def generate_lzma_stream(data, dict_size=33554432, lc=3, lp=1, pb=1):
+def generate_lzma_stream(data: bytes, dict_size: int=33554432, lc: int=3, lp: int=1, pb: int=1) -> bytes:
     lzma_filters = [
         {'id': FILTER_LZMA1, 'dict_size': dict_size, 'lc': lc, 'lp': lp, 'pb': pb}
     ]
