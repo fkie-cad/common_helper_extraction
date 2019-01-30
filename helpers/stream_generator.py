@@ -23,7 +23,5 @@ def generate_lzma_stream(data: bytes, dict_size: int=33554432, lc: int=3, lp: in
         {'id': FILTER_LZMA1, 'dict_size': dict_size, 'lc': lc, 'lp': lp, 'pb': pb}
     ]
     compressor = LZMACompressor(format=FORMAT_ALONE, filters=lzma_filters)
-    lzma_stream = []
-    lzma_stream.append(compressor.compress(data))
-    lzma_stream.append(compressor.flush())
-    return b''.join(lzma_stream)
+    lzma_stream = compressor.compress(data)
+    return b''.join((lzma_stream, compressor.flush()))

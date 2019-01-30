@@ -33,10 +33,7 @@ def extract_lzma_streams(input_data: bytes) -> list:
 
 
 def get_decompressed_lzma_streams(compressed_streams: list) -> list:
-    decompressed_streams = list()
-    for stream in compressed_streams:
-        decompressed_streams.append((stream[0], _decompress_lzma_stream(stream[1])))
-    return decompressed_streams
+    return [(offset, _decompress_lzma_stream(compressed_data)) for offset, compressed_data in compressed_streams]
 
 
 def _decompress_lzma_stream(compressed_stream: bytes) -> bytes:
