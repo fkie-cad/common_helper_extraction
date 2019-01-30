@@ -12,7 +12,7 @@ Extraction support functions
 
 Cuts a BLOB `input_data` at paddings of `padding_pattern` with a minimal length of `padding_min_length`.
 
-`cut_at_padding(input_data, padding_min_length=4, padding_pattern=b'\x00')`
+`cut_at_padding(input_data: bytes, padding_min_length: int=4, padding_pattern: bytes=b'\x00') -> list:`
 
 The result is a list of OFFSET, DATA tuples.
 
@@ -24,7 +24,20 @@ The result is a list of OFFSET, DATA tuples.
 
 Extracts LZMA streams out of a BLOB `input_data`.
 
-`extract_lzma_streams(input_data)`
+`extract_lzma_streams(input_data: bytes) -> list`
+
+The result is a list of OFFSET, DATA tuples.
+
+```python
+[ (OFFSET_1, DATA_1), ... ]
+```
+
+
+### get_decompressed_lzma_streams
+
+Decompresses LZMA streams that may be the result of `extract_lzma_streams`.
+
+`get_decompressed_lzma_streams(compressed_streams: list) -> list:`
 
 The result is a list of OFFSET, DATA tuples.
 
