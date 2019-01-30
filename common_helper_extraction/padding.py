@@ -17,7 +17,7 @@
 '''
 
 
-def cut_at_padding(input_data, padding_min_length=4, padding_pattern=b'\x00'):
+def cut_at_padding(input_data: bytes, padding_min_length: int=4, padding_pattern: bytes=b'\x00') -> list:
     fast_search_pattern = padding_min_length * padding_pattern
     area_start = 0
     area_end = 0
@@ -35,7 +35,7 @@ def cut_at_padding(input_data, padding_min_length=4, padding_pattern=b'\x00'):
     return result
 
 
-def _find_next_data_block(input_data, begin_of_padding, padding_pattern):
+def _find_next_data_block(input_data: bytes, begin_of_padding: int, padding_pattern: bytes) -> int:
     cursor = begin_of_padding + len(padding_pattern)
     while input_data[cursor:cursor + len(padding_pattern)] == padding_pattern:
         cursor += len(padding_pattern)
