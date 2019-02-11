@@ -41,7 +41,7 @@ def _decompress_lzma_stream(compressed_stream: bytes) -> bytes:
         return decompress(compressed_stream)
     except LZMAError as e:
         logging.error('lzma decompression failed: {}'.format(e))
-        return b''
+        return b'ERROR: lzma decompression failed: ' + str(e).encode('utf-8')
 
 
 def _find_next_stream(input_data: bytes, offset: int) -> int:

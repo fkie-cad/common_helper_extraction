@@ -30,7 +30,7 @@ def test_get_decompressed_lzma_streams(input_data, expected):
 @pytest.mark.parametrize('input_data, expected', [
     (VALID_LZMA_STREAM, b'test'),
     (LZMA_STREAM_WITH_ADDITIONAL_DATA, b'test with additional data'),
-    (CORRUPTED_STREAM, b'')
+    (CORRUPTED_STREAM, b'ERROR: lzma decompression failed: Corrupt input data')
 ])
 def test_decompress_lzma_stream(input_data, expected):
     assert _decompress_lzma_stream(input_data) == expected
