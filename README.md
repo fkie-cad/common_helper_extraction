@@ -8,6 +8,13 @@ Extraction support functions
 
 ## Function Overview
 
+### dump_files
+
+Uses the result list of one of the other functions and dumps the files to `destination_directory`.
+File names are `OFFSET[suffix]`.  
+
+`def dump_files(data: list, destination_directory: str, suffix: str='') -> None:`
+
 ### cut_at_padding
 
 Cuts a BLOB `input_data` at paddings of `padding_pattern` with a minimal length of `padding_min_length`.
