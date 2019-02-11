@@ -20,6 +20,6 @@ from pathlib import Path
 
 
 def dump_files(data: list, destination_directory: str, suffix: str='') -> None:
-    for section in data:
-        output_path = Path(destination_directory, '{offset:#x}{suffix}'.format(offset=section[0], suffix=suffix))
-        write_binary_to_file(section[1], str(output_path), overwrite=False, file_copy=True)
+    for offset, content in data:
+        output_path = Path(destination_directory, '{offset:#x}{suffix}'.format(offset=offset, suffix=suffix))
+        write_binary_to_file(content, str(output_path), overwrite=False, file_copy=True)
