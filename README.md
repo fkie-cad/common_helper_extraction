@@ -39,7 +39,6 @@ The result is a list of OFFSET, DATA tuples.
 [ (OFFSET_1, DATA_1), ... ]
 ```
 
-
 ### get_decompressed_lzma_streams
 
 Decompresses LZMA streams that may be the result of `extract_lzma_streams`.
