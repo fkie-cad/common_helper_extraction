@@ -36,7 +36,7 @@ The streams must be defined by a regular expression `stream_regex`.
 
 The library provides the following `stream_regex`:
 
-```
+```sh
 SRECORD_REGEX
 INTEL_HEX_REGEX
 ```
