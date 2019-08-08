@@ -27,6 +27,26 @@ The result is a list of OFFSET, DATA tuples.
 [ (OFFSET_1, DATA_1), ... ]
 ```
 
+### extract_encoded_streams
+
+Extracts encoded streams out of a BLOB `input_data`.
+The streams must be defined by a regular expression `stream_regex`.
+
+`extract_encoded_streams(input_data: bytes, stream_regex: bytes) -> list`  
+
+The library provides the following `stream_regex`:
+
+```
+SRECORD_REGEX
+INTEL_HEX_REGEX
+```
+
+The result is a list of OFFSET, DATA tuples.
+
+```python
+[ (OFFSET_1, DATA_1), ... ]
+```
+
 ### extract_lzma_streams
 
 Extracts LZMA streams out of a BLOB `input_data`.
