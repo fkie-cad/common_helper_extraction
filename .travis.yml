@@ -1,12 +1,13 @@
+dist: bionic
 language: python
 python:
   - "3.5"
   - "3.6"
-# command to install dependencies
+  - "3.7"
 install:
-  - "python setup.py -q install" 
-  - "pip install --upgrade pytest pytest-pep8 pytest-cov codecov"
-# command to run tests
-script: "pytest --cov-config .coveragerc --cov=./"
+  - python setup.py -q install 
+  - pip install --upgrade pytest pytest-pep8 pytest-cov codecov
+script:
+  - pytest --cov-config .coveragerc --cov=./
 after_success:
-- codecov
+  - codecov

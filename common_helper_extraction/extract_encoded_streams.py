@@ -23,7 +23,8 @@ INTEL_HEX_REGEX = b'(:[0-9A-Fa-f]{10,}[\x0d\x0a]+)+:00000001FF'
 
 def extract_encoded_streams(input_data: bytes, stream_regex: bytes) -> list:
     stream_signature = re.compile(stream_regex)
-    stream_list = list()
-    for match in stream_signature.finditer(input_data):
-        stream_list.append((match.start(), match.group()))
+    stream_list = [
+        (match.start(), match.group())
+        for match in stream_signature.finditer(input_data)
+    ]
     return stream_list
