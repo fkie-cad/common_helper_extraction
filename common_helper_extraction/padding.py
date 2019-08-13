@@ -17,7 +17,7 @@
 '''
 
 
-def cut_at_padding(input_data: bytes, padding_min_length: int=4, padding_pattern: bytes=b'\x00') -> list:
+def cut_at_padding(input_data: bytes, padding_min_length: int = 4, padding_pattern: bytes = b'\x00') -> list:
     fast_search_pattern = padding_min_length * padding_pattern
     area_start = 0
     area_end = 0

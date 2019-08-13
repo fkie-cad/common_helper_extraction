@@ -15,10 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from lzma import LZMACompressor, FORMAT_ALONE, FILTER_LZMA1
+from lzma import FILTER_LZMA1, FORMAT_ALONE, LZMACompressor
 
 
-def generate_lzma_stream(data: bytes, dict_size: int=33554432, lc: int=3, lp: int=1, pb: int=1) -> bytes:
+def generate_lzma_stream(data: bytes, dict_size: int = 33554432, lc: int = 3, lp: int = 1, pb: int = 1) -> bytes:
     lzma_filters = [
         {'id': FILTER_LZMA1, 'dict_size': dict_size, 'lc': lc, 'lp': lp, 'pb': pb}
     ]

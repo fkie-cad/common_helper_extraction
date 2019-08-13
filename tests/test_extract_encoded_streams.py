@@ -3,7 +3,9 @@ from pathlib import Path
 from common_helper_files import get_binary_from_file
 
 import pytest
-from common_helper_extraction.extract_encoded_streams import INTEL_HEX_REGEX, SRECORD_REGEX, extract_encoded_streams
+from common_helper_extraction.extract_encoded_streams import (
+    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
+)
 
 
 @pytest.mark.parametrize('input_stream, regex, expected', [
@@ -21,6 +23,9 @@ def test_extraction_function(input_stream, regex, expected):
     ('combined_test_file', INTEL_HEX_REGEX, 6, 10508),
     ('hello_fact_user.srec', SRECORD_REGEX, 0, 10760),
     ('combined_test_file', SRECORD_REGEX, 10527, 10760),
+    ('testfile.tek', TEKTRONIX_REGEX, 0, 185),
+    ('hello_fact_user.tekext', TEKTRONIX_EXT_REGEX, 0, 9329),
+    ('hello_fact_user.tekext_sec', TEKTRONIX_EXT_REGEX, 0, 8819)
 ])
 def test_extraction(test_file, regex, expected_offset, expected_size):
     raw_input = get_binary_from_file(_get_test_file(test_file))

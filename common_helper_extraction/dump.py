@@ -15,11 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from common_helper_files import write_binary_to_file
 from pathlib import Path
 
+from common_helper_files import write_binary_to_file
 
-def dump_files(data: list, destination_directory: str, suffix: str='') -> None:
+
+def dump_files(data: list, destination_directory: str, suffix: str = '') -> None:
     for offset, content in data:
         output_path = Path(destination_directory, '{offset:#x}{suffix}'.format(offset=offset, suffix=suffix))
         write_binary_to_file(content, str(output_path), overwrite=False, file_copy=True)
