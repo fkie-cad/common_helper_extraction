@@ -7,10 +7,10 @@ setup(
     version=VERSION,
     packages=find_packages(),
     install_requires=[
-        'common_helper_files >= 0.2'
+        'common_helper_files >= 0.2.2'
     ],
     dependency_links=[
-        'https://github.com/fkie-cad/common_helper_files/tarball/master#egg=common_helper_files-0.2',
+        'git+https://github.com/fkie-cad/common_helper_files.git#egg=common_helper_files-0.2.2',
     ],
     description='Extraction support functions',
     author='Fraunhofer FKIE',
