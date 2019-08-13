@@ -39,6 +39,8 @@ The library provides the following `stream_regex`:
 ```sh
 SRECORD_REGEX
 INTEL_HEX_REGEX
+TEKTRONIX_REGEX
+TEKTRONIX_EXT_REGEX
 ```
 
 The result is a list of OFFSET, DATA tuples.
