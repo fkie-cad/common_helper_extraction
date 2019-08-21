@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import logging
-from lzma import decompress, LZMAError
-
+from lzma import LZMAError, decompress
 
 HP_LZMA_HEADER = b'\x39\x00\x00\x00\x02\xff\xff\xff\xff\xff\xff\xff\xff'
 
@@ -39,9 +38,9 @@ def get_decompressed_lzma_streams(compressed_streams: list, *_) -> list:
 def _decompress_lzma_stream(compressed_stream: bytes) -> bytes:
     try:
         return decompress(compressed_stream)
-    except LZMAError as e:
-        logging.error('lzma decompression failed: {}'.format(e))
-        return b'ERROR: lzma decompression failed: ' + str(e).encode('utf-8')
+    except LZMAError as err:
+        logging.error('lzma decompression failed: {}'.format(err))
+        return b'ERROR: lzma decompression failed: ' + str(err).encode('utf-8')
 
 
 def _find_next_stream(input_data: bytes, offset: int, header: bytes) -> int:
