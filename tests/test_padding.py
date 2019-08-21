@@ -1,7 +1,6 @@
 import pytest
 
-from common_helper_extraction import cut_at_padding
-from common_helper_extraction.padding import _find_next_data_block
+from common_helper_extraction.padding import _find_next_data_block, cut_at_padding
 
 
 @pytest.mark.parametrize('input_data, padding_min_length, padding_pattern, expected', [
