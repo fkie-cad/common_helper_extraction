@@ -4,7 +4,8 @@ from common_helper_files import get_binary_from_file
 
 import pytest
 from common_helper_extraction.extract_encoded_streams import (
-    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, ASCII85_ADOBE_REGEX, extract_encoded_streams
+    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, ASCII85_ADOBE_REGEX, BASE64_REGEX,
+    extract_encoded_streams, extract_explicit_base64
 )
 
 
@@ -26,7 +27,10 @@ def test_extraction_function(input_stream, regex, expected):
     ('testfile.tek', TEKTRONIX_REGEX, 0, 185),
     ('hello_fact_user.tekext', TEKTRONIX_EXT_REGEX, 0, 9329),
     ('hello_fact_user.tekext_sec', TEKTRONIX_EXT_REGEX, 0, 8819),
-    ('hello_fact_user.asc85', ASCII85_ADOBE_REGEX, 0, 3814)
+    ('hello_fact_user.asc85', ASCII85_ADOBE_REGEX, 0, 3814),
+    ('hello_fact_user.b64', BASE64_REGEX, 0, 17855),
+    ('combined_test_file', BASE64_REGEX, 21305, 17855),
+    ('explicit_base64.b64', BASE64_REGEX, 1041, 1039)
 ])
 def test_extraction(test_file, regex, expected_offset, expected_size):
     raw_input = get_binary_from_file(_get_test_file(test_file))
@@ -34,6 +38,13 @@ def test_extraction(test_file, regex, expected_offset, expected_size):
     assert len(result) == 1
     assert result[0][0] == expected_offset
     assert len(result[0][1]) == expected_size
+
+
+def test_explicit_base64_extraction():
+    stream_list = [(0, b'AAAAAAAA'), (8, b'AAAAAAA=')]
+    extract_explicit_base64(stream_list)
+    assert len(stream_list) == 1
+    assert stream_list[0][0] == 8
 
 
 def _get_test_file(file_name: str) -> Path:
