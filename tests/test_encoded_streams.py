@@ -4,7 +4,7 @@ from common_helper_files import get_binary_from_file
 
 import pytest
 from common_helper_extraction.encoded_streams import (
-    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
+    ASCII85_ADOBE_REGEX, INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
 )
 
 
@@ -25,7 +25,8 @@ def test_extraction_function(input_stream, regex, expected):
     ('combined_test_file', SRECORD_REGEX, 10527, 10760),
     ('testfile.tek', TEKTRONIX_REGEX, 0, 185),
     ('hello_fact_user.tekext', TEKTRONIX_EXT_REGEX, 0, 9329),
-    ('hello_fact_user.tekext_sec', TEKTRONIX_EXT_REGEX, 0, 8819)
+    ('hello_fact_user.tekext_sec', TEKTRONIX_EXT_REGEX, 0, 8819),
+    ('hello_fact_user.asc85', ASCII85_ADOBE_REGEX, 0, 3814)
 ])
 def test_extraction(test_file, regex, expected_offset, expected_size):
     raw_input = get_binary_from_file(_get_test_file(test_file))
