@@ -16,8 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import logging
+from struct import calcsize, unpack
 
 SQFS_HEADERS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
+SQFS_SIZE_BUFFER_OFFSET = 0x28
+SQFS_SIZE_BUFFER_TYPE = 'Q'
 
 
 def extract_sqfs(input_data: bytes) -> list:
@@ -29,22 +32,29 @@ def extract_sqfs(input_data: bytes) -> list:
 
 def _get_sqfs_sections_with_magic(input_data: bytes, sqfs_magic: bytes) -> list:
     sqfs_sections = list()
-    current_offset = _find_next_sqfs(input_data, 0, sqfs_magic)
+    current_offset = _find_next_fs(input_data, 0, sqfs_magic)
     while current_offset < len(input_data):
-        sqfs_end_offset = current_offset + _get_sqfs_size(input_data, current_offset)
+        sqfs_end_offset = current_offset + _get_fs_size(input_data[current_offset:], SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
         sqfs_sections.append((current_offset, input_data[current_offset:sqfs_end_offset]))
-        current_offset = _find_next_sqfs(input_data, sqfs_end_offset, sqfs_magic)
+        current_offset = _find_next_fs(input_data, sqfs_end_offset, sqfs_magic)
     return sqfs_sections
 
 
-def _find_next_sqfs(input_data: bytes, offset: int, header: bytes) -> int:
+def _find_next_fs(input_data: bytes, offset: int, header: bytes) -> int:
     try:
         return input_data.index(header, offset, len(input_data))
     except ValueError:
-        logging.debug('no sqfs found')
+        logging.debug('no fs found')
         return len(input_data)
 
 
-def _get_sqfs_size(input_data: bytes, offset: int) -> int:  # pylint: disable=unused-argument
-    # ToDo: Implement this function
-    return 100
+def _get_endiness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
+    if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
+        return '<'
+    return '>'
+
+
+def _get_fs_size(input_data: bytes, size_buffer_offset: int, size_buffer_type: str) -> int:
+    size_field_buffer = input_data[size_buffer_offset:size_buffer_offset + calcsize(size_buffer_type)]
+    endianness = _get_endiness(size_field_buffer, size_buffer_type, len(input_data))
+    return unpack('{}{}'.format(endianness, size_buffer_type), size_field_buffer)[0]
