@@ -18,25 +18,25 @@
 import logging
 from struct import calcsize, unpack
 
-SQFS_HEADERS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
+SQFS_MAGIC_STRINGS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
 SQFS_SIZE_BUFFER_OFFSET = 0x28
 SQFS_SIZE_BUFFER_TYPE = 'Q'
 
 
 def extract_sqfs(input_data: bytes) -> list:
     sqfs_sections = list()
-    for sqfs_magic in SQFS_HEADERS:
-        sqfs_sections.extend(_get_sqfs_sections_with_magic(input_data, sqfs_magic))
+    for sqfs_magic in SQFS_MAGIC_STRINGS:
+        sqfs_sections.extend(_get_fs_sections_with_magic(input_data, sqfs_magic, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE))
     return sqfs_sections
 
 
-def _get_sqfs_sections_with_magic(input_data: bytes, sqfs_magic: bytes) -> list:
+def _get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:
     sqfs_sections = list()
-    current_offset = _find_next_fs(input_data, 0, sqfs_magic)
+    current_offset = _find_next_fs(input_data, 0, magic_string)
     while current_offset < len(input_data):
-        sqfs_end_offset = current_offset + _get_fs_size(input_data[current_offset:], SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
+        sqfs_end_offset = current_offset + _get_fs_size(input_data[current_offset:], buffer_offset, buffer_type)
         sqfs_sections.append((current_offset, input_data[current_offset:sqfs_end_offset]))
-        current_offset = _find_next_fs(input_data, sqfs_end_offset, sqfs_magic)
+        current_offset = _find_next_fs(input_data, sqfs_end_offset, magic_string)
     return sqfs_sections
 
 
