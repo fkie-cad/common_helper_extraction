@@ -23,15 +23,15 @@ SQFS_SIZE_BUFFER_OFFSET = 0x28
 SQFS_SIZE_BUFFER_TYPE = 'Q'
 
 
-def extract_sqfs(input_data: bytes) -> list:
-    return extract_fs(input_data, SQFS_MAGIC_STRINGS, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
-
-
 def extract_fs(input_data: bytes, magic_strings: list, size_buffer_offset: int, size_buffer_type: str) -> list:
     fs_sections = list()
     for fs_magic in magic_strings:
         fs_sections.extend(_get_fs_sections_with_magic(input_data, fs_magic, size_buffer_offset, size_buffer_type))
     return fs_sections
+
+
+def extract_sqfs(input_data: bytes) -> list:
+    return extract_fs(input_data, SQFS_MAGIC_STRINGS, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
 
 
 def _get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:
