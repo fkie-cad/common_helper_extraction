@@ -1,18 +1,18 @@
 import pytest
-from common_helper_extraction.lzma import LZMA_HEADER, extract_lzma_streams,\
+from common_helper_extraction.lzma import HP_LZMA_HEADER, extract_lzma_streams,\
     _decompress_lzma_stream, get_decompressed_lzma_streams
 from helpers.stream_generator import generate_lzma_stream
 
 VALID_LZMA_STREAM = generate_lzma_stream(b'test')
 LZMA_STREAM_WITH_ADDITIONAL_DATA = generate_lzma_stream(b'test with additional data') + b'some useless data at the end'
-CORRUPTED_STREAM = LZMA_HEADER + b'useless_content'
+CORRUPTED_STREAM = HP_LZMA_HEADER + b'useless_content'
 
 
 @pytest.mark.parametrize('input_data, expected', [
     (b'no_header', []),
-    (LZMA_HEADER + b'content', [(0, LZMA_HEADER + b'content')]),
-    (b'pre' + LZMA_HEADER + b'content', [(3, LZMA_HEADER + b'content')]),
-    (b'pre' + LZMA_HEADER + b'content1' + LZMA_HEADER + b'content2', [(3, LZMA_HEADER + b'content1'), (24, LZMA_HEADER + b'content2')]),
+    (HP_LZMA_HEADER + b'content', [(0, HP_LZMA_HEADER + b'content')]),
+    (b'pre' + HP_LZMA_HEADER + b'content', [(3, HP_LZMA_HEADER + b'content')]),
+    (b'pre' + HP_LZMA_HEADER + b'content1' + HP_LZMA_HEADER + b'content2', [(3, HP_LZMA_HEADER + b'content1'), (24, HP_LZMA_HEADER + b'content2')]),
 ])
 def test_extract_lzma_streams(input_data, expected):
     assert extract_lzma_streams(input_data) == expected
