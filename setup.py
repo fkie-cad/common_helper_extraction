@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-VERSION = '0.6'
+VERSION = '1.0'
 
 setup(
     name='common_helper_extraction',

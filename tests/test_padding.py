@@ -1,7 +1,5 @@
 import pytest
-
-from common_helper_extraction import cut_at_padding
-from common_helper_extraction.padding import _find_next_data_block
+from common_helper_extraction.padding import _find_next_data_block, cut_at_padding, get_padding_seperated_sections
 
 
 @pytest.mark.parametrize('input_data, padding_min_length, padding_pattern, expected', [
@@ -17,6 +15,16 @@ from common_helper_extraction.padding import _find_next_data_block
 def test_cut_at_padding(input_data, padding_min_length, padding_pattern, expected):
     result = cut_at_padding(input_data, padding_min_length=padding_min_length, padding_pattern=padding_pattern)
     assert isinstance(result, list)
+    assert len(result) == len(expected)
+    assert result == expected
+
+
+@pytest.mark.parametrize('input_data, padding_min_length, padding_pattern, expected', [
+    (b'no_padding', 1, b'\x00', []),
+    (b'before\x00after', 1, b'\x00', [(0, b'before'), (7, b'after')])
+])
+def test_get_padded_sections(input_data, padding_min_length, padding_pattern, expected):
+    result = get_padding_seperated_sections(input_data, padding_min_length=padding_min_length, padding_pattern=padding_pattern)
     assert len(result) == len(expected)
     assert result == expected
 

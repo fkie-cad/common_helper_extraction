@@ -3,8 +3,8 @@ from pathlib import Path
 from common_helper_files import get_binary_from_file
 
 import pytest
-from common_helper_extraction.extract_encoded_streams import (
-    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, ASCII85_ADOBE_REGEX, extract_encoded_streams
+from common_helper_extraction.encoded_streams import (
+    ASCII85_ADOBE_REGEX, INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
 )
 
 
