@@ -1,6 +1,6 @@
 import pytest
 from common_helper_extraction.fs import (
-    SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE, _get_endiness, _get_fs_size, extract_sqfs
+    SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE, _get_endianness, _get_fs_size, extract_sqfs
 )
 
 from .helper import get_binary_from_test_file
@@ -25,4 +25,4 @@ def test_get_fs_size():
     (b'\x00\x00\x01\x91', 'I', 4096, '>')
 ])
 def test_get_endiness(size_field_buffer, size_field_type, data_length, expected):
-    assert _get_endiness(size_field_buffer, size_field_type, data_length) == expected
+    assert _get_endianness(size_field_buffer, size_field_type, data_length) == expected

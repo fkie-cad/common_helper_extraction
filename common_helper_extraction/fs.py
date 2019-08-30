@@ -35,13 +35,13 @@ def extract_sqfs(input_data: bytes) -> list:
 
 
 def _get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:
-    sqfs_sections = list()
+    fs_sections = list()
     current_offset = _find_next_fs(input_data, 0, magic_string)
     while current_offset < len(input_data):
-        sqfs_end_offset = current_offset + _get_fs_size(input_data[current_offset:], buffer_offset, buffer_type)
-        sqfs_sections.append((current_offset, input_data[current_offset:sqfs_end_offset]))
-        current_offset = _find_next_fs(input_data, sqfs_end_offset, magic_string)
-    return sqfs_sections
+        fs_end_offset = current_offset + _get_fs_size(input_data[current_offset:], buffer_offset, buffer_type)
+        fs_sections.append((current_offset, input_data[current_offset:fs_end_offset]))
+        current_offset = _find_next_fs(input_data, fs_end_offset, magic_string)
+    return fs_sections
 
 
 def _find_next_fs(input_data: bytes, offset: int, header: bytes) -> int:
@@ -52,7 +52,7 @@ def _find_next_fs(input_data: bytes, offset: int, header: bytes) -> int:
         return len(input_data)
 
 
-def _get_endiness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
+def _get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
     if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
         return '<'
     return '>'
@@ -60,5 +60,5 @@ def _get_endiness(size_field_buffer: bytes, size_field_type: str, file_size: int
 
 def _get_fs_size(input_data: bytes, size_buffer_offset: int, size_buffer_type: str) -> int:
     size_field_buffer = input_data[size_buffer_offset:size_buffer_offset + calcsize(size_buffer_type)]
-    endianness = _get_endiness(size_field_buffer, size_buffer_type, len(input_data))
+    endianness = _get_endianness(size_field_buffer, size_buffer_type, len(input_data))
     return unpack('{}{}'.format(endianness, size_buffer_type), size_field_buffer)[0]

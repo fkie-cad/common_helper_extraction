@@ -8,5 +8,5 @@ def get_binary_from_test_file(file_name: str) -> bytes:
 
 
 def _get_test_file(file_name: str) -> Path:
-    test_dir = Path(Path(__file__).parent, 'data')
-    return Path(test_dir, file_name)
+    test_dir = Path(__file__).parent / 'data'
+    return test_dir / file_name
