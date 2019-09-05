@@ -30,6 +30,28 @@ def extract_fs(input_data: bytes, magic_strings: list, size_buffer_offset: int, 
     return fs_sections
 
 
+def _get_yaffs_header(input_data: bytes, offset: int) -> int:
+    if _is_yaffs_header(input_data[offset:]):
+        object_id = _get_yaffs_object_id(input_data[offset:])
+        expected_data_size = _get_yaffs_data_size(input_data[offset:])
+        return expected_data_size
+
+
+def _is_yaffs_header(input_data: bytes) -> bool:
+    if (input_data[8:10] == b'\xff\xff') and (input_data[265:268] == b'\xff\xff\xff'):
+        return True
+    else:
+        return False
+
+
+def _get_yaffs_object_id(input_data: bytes) -> int:
+    return unpack('>{}'.format('I'), input_data[0:4])[0]
+
+
+def _get_yaffs_data_size(input_data: bytes) -> int:
+    return unpack('>{}'.format('I'), input_data[292:296])[0]
+
+
 def extract_sqfs(input_data: bytes) -> list:
     return extract_fs(input_data, SQFS_MAGIC_STRINGS, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
 
