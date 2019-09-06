@@ -3,6 +3,7 @@ from collections import namedtuple
 from common_helper_extraction.encoded_streams import (
     INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
 )
+from common_helper_extraction.fs import extract_sqfs
 from common_helper_extraction.lzma import HP_LZMA_HEADER, extract_lzma_streams
 from common_helper_extraction.padding import get_padding_seperated_sections
 
@@ -15,6 +16,7 @@ IHEX_EXTRACTOR = Extractor('Intel Hex', extract_encoded_streams, [INTEL_HEX_REGE
 TEK_EXTRECTOR = Extractor('Tektronix', extract_encoded_streams, [TEKTRONIX_REGEX], '.tek')
 TEKX_EXTRACTOR = Extractor('Tektronix Extended', extract_encoded_streams, [TEKTRONIX_EXT_REGEX], '.tekx')
 HP_LZMA_EXTRACTOR = Extractor('LZMA', extract_lzma_streams, [HP_LZMA_HEADER], '.lzma')
+SQFS_EXTRACTOR = Extractor('SQFS', extract_sqfs, [], '.sqfs')
 
 
 EXTRACTOR_LIST = [PADDING_EXTRACTOR, SREC_EXTRACTOR, IHEX_EXTRACTOR, TEK_EXTRECTOR, TEKX_EXTRACTOR, HP_LZMA_EXTRACTOR]
