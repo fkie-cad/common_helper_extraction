@@ -47,5 +47,5 @@ def test_get_fs_size():
     (b'\x91\x01\x00\x00\x00\x00\x00\x00', 'Q', 4096, '<'),
     (b'\x00\x00\x01\x91', 'I', 4096, '>')
 ])
-def test_get_endiness(size_field_buffer, size_field_type, data_length, expected):
+def test_get_endianness(size_field_buffer, size_field_type, data_length, expected):
     assert _get_endianness(size_field_buffer, size_field_type, data_length) == expected
