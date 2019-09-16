@@ -1,23 +1,23 @@
 import pytest
 from common_helper_extraction.fs import (
-    SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE, _get_endianness, _get_fs_size, extract_sqfs
+    _get_endianness, extract_fs
 )
 
 from .helper import get_binary_from_test_file
 
 
-def test_sqfs_extraction():
-    result = extract_sqfs(get_binary_from_test_file('combined_fs'))
-    assert isinstance(result, list)
-    assert len(result) == 1
-    assert result[0][0] == 11
-    assert len(result[0][1]) == 401
-
-
-def test_get_fs_size():
-    test_data = get_binary_from_test_file('fs.sqfs')
-    result = _get_fs_size(test_data, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
-    assert result == 401
+@pytest.mark.parametrize('test_file, expected_results, expected_offset, expected_length', [
+    ('yaffs2_be.img', 1, 0, 14784),
+    ('yaffs2_le.img', 1, 0, 14784),
+    ('yaffs2_be_off.img', 1, 7, 14784),
+    ('fs.sqfs', 1, 0, 401),
+    ('combined_fs', 2, 11, 401)
+])
+def test_fs_extraction(test_file, expected_results, expected_offset, expected_length):
+    result = extract_fs(get_binary_from_test_file(test_file))
+    assert len(result) == expected_results
+    assert result[0][0] == expected_offset
+    assert len(result[0][1]) == expected_length
 
 
 @pytest.mark.parametrize('size_field_buffer, size_field_type, data_length, expected', [

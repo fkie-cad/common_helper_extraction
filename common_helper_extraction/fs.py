@@ -17,21 +17,25 @@
 '''
 import logging
 from struct import calcsize, unpack
+from common_helper_extraction.yaffs import Yaffs
 
 SQFS_MAGIC_STRINGS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
 SQFS_SIZE_BUFFER_OFFSET = 0x28
 SQFS_SIZE_BUFFER_TYPE = 'Q'
 
 
-def extract_fs(input_data: bytes, magic_strings: list, size_buffer_offset: int, size_buffer_type: str) -> list:
+def extract_fs(input_data: bytes) -> list:
     fs_sections = list()
-    for fs_magic in magic_strings:
-        fs_sections.extend(_get_fs_sections_with_magic(input_data, fs_magic, size_buffer_offset, size_buffer_type))
+    fs_sections.extend(extract_sqfs(input_data))
+    fs_sections.extend(Yaffs().extract_fs(input_data))
     return fs_sections
 
 
 def extract_sqfs(input_data: bytes) -> list:
-    return extract_fs(input_data, SQFS_MAGIC_STRINGS, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE)
+    fs_sections = list()
+    for fs_magic in SQFS_MAGIC_STRINGS:
+        fs_sections.extend(_get_fs_sections_with_magic(input_data, fs_magic, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE))
+    return  fs_sections
 
 
 def _get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:

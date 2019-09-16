@@ -15,8 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from common_helper_extraction.fs import _get_endianness
-from struct import calcsize, unpack
+from struct import unpack
 
 
 class Yaffs:
@@ -26,33 +25,27 @@ class Yaffs:
         self._endianess = None
         self._offset = None
 
-    def get_fs_offset(self, input_data: bytes) -> int:
-        self._offset = self._get_first_header(input_data)
-        if self._offset == -1:
-            return -1
-        self._input_data = input_data[self._offset:]
-        return self._offset
-
-    def extract_fs(self):
+    def extract_fs(self, input_data: bytes):
         fs_sections = list()
+        self._input_data = input_data
+        if self._set_fs_offset() == -1:
+            return fs_sections
         index = 0
         while index < len(self._input_data):
             chunk = self._input_data[index:]
             if self._get_object_type(chunk) == 1:
                 if self._confirm_data(chunk, self._get_object_id(chunk), self._get_data_size(chunk)):
-                    print(index)
                     index += 4224
             else:
                 index += 2112
-        print(index)
         fs_sections.append([self._offset, self._input_data[:index]])
         return fs_sections
 
-    def _confirm_data(self, chunk: bytes, object_id: int, data_size: int) -> bool:
-        if chunk[4169] == object_id and \
-                unpack('{}{}'.format(self._endianess, 'I'), chunk[4174:4178])[0] == data_size:
-            return True
-        return False
+    def _set_fs_offset(self):
+        self._offset = self._get_first_header(self._input_data)
+        if self._offset == -1:
+            return -1
+        self._input_data = self._input_data[self._offset:]
 
     def _get_first_header(self, input_data) -> int:
         index = 0
@@ -62,21 +55,32 @@ class Yaffs:
                 return -1
         return index
 
-    def _is_yaffs_header(self, input_data=None) -> bool:
-        if input_data is None:
-            input_data = self._input_data
+    def _is_yaffs_header(self, input_data) -> bool:
         if (input_data[8:10] == b'\xff\xff') and \
                 (input_data[265:268] == b'\xff\xff\xff') and \
-                (input_data[2060:2064] == b'\x00\x00\x00\x00'):
-            self._endianess = _get_endianness(input_data[0:4], 'I', len(input_data))
+                (input_data[2058:2062] == b'\x00\x00\x00\x00'):
+            self._endianess = self._get_endianness(input_data[0:4], 'I', len(input_data))
             return True
         return False
+
+    def _get_endianness(self, size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
+        if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
+            return '<'
+        return '>'
 
     def _get_object_type(self, chunk: bytes) -> int:
         return unpack('{}{}'.format(self._endianess, 'I'), chunk[0:4])[0]
 
+    def _confirm_data(self, chunk: bytes, object_id: int, data_size: int) -> bool:
+        if unpack('{}{}'.format(self._endianess, 'I'), chunk[4166:4170])[0] == object_id and \
+                unpack('{}{}'.format(self._endianess, 'I'), chunk[4174:4178])[0] == data_size:
+            return True
+        return False
+
     def _get_object_id(self, chunk: bytes) -> int:
-        return chunk[2057]
+        return unpack('{}{}'.format(self._endianess, 'I'), chunk[2054:2058])[0]
 
     def _get_data_size(self, chunk: bytes) -> int:
         return unpack('{}{}'.format(self._endianess, 'I'), chunk[292:296])[0]
+
+
