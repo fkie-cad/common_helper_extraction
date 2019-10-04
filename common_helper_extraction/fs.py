@@ -35,7 +35,7 @@ def extract_sqfs(input_data: bytes) -> list:
     fs_sections = list()
     for fs_magic in SQFS_MAGIC_STRINGS:
         fs_sections.extend(_get_fs_sections_with_magic(input_data, fs_magic, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE))
-    return  fs_sections
+    return fs_sections
 
 
 def _get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:

@@ -83,4 +83,3 @@ class Yaffs:
     def _get_data_size(self, chunk: bytes) -> int:
         return unpack('{}{}'.format(self._endianess, 'I'), chunk[292:296])[0]
 
-
