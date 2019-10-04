@@ -13,3 +13,10 @@ def test_extract_fs(test_file, expected_offset, expected_length):
     result = Yaffs().extract_fs(get_binary_from_test_file(test_file))
     assert result[0][0] == expected_offset
     assert len(result[0][1]) == expected_length
+
+
+def test_fs_error():
+    false_yaffs = Yaffs()
+    false_yaffs._endianess = '<'
+    result = false_yaffs._confirm_data(get_binary_from_test_file('fs.sqfs'), 0, 0)
+    assert result is False

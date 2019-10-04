@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from struct import unpack
+from struct import unpack, error
 
 
 class Yaffs:
@@ -72,9 +72,12 @@ class Yaffs:
         return unpack('{}{}'.format(self._endianess, 'I'), chunk[0:4])[0]
 
     def _confirm_data(self, chunk: bytes, object_id: int, data_size: int) -> bool:
-        if unpack('{}{}'.format(self._endianess, 'I'), chunk[4166:4170])[0] == object_id and \
-                unpack('{}{}'.format(self._endianess, 'I'), chunk[4174:4178])[0] == data_size:
-            return True
+        try:
+            if unpack('{}{}'.format(self._endianess, 'I'), chunk[4166:4170])[0] == object_id and \
+                    unpack('{}{}'.format(self._endianess, 'I'), chunk[4174:4178])[0] == data_size:
+                return True
+        except error:
+            pass
         return False
 
     def _get_object_id(self, chunk: bytes) -> int:
