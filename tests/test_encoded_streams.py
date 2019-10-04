@@ -1,12 +1,9 @@
-from pathlib import Path
-
-from common_helper_files import get_binary_from_file
-
 import pytest
-from common_helper_extraction.extract_encoded_streams import (
-    INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, ASCII85_ADOBE_REGEX, BASE64_REGEX,
-    extract_encoded_streams, extract_explicit_base64
+from common_helper_extraction.encoded_streams import (
+    ASCII85_ADOBE_REGEX, INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, BASE64_REGEX, extract_encoded_streams
 )
+
+from .helper import get_binary_from_test_file
 
 
 @pytest.mark.parametrize('input_stream, regex, expected', [
@@ -33,20 +30,8 @@ def test_extraction_function(input_stream, regex, expected):
     ('explicit_base64.b64', BASE64_REGEX, 1041, 1039)
 ])
 def test_extraction(test_file, regex, expected_offset, expected_size):
-    raw_input = get_binary_from_file(_get_test_file(test_file))
+    raw_input = get_binary_from_test_file(test_file)
     result = extract_encoded_streams(raw_input, regex)
     assert len(result) == 1
     assert result[0][0] == expected_offset
     assert len(result[0][1]) == expected_size
-
-
-def test_explicit_base64_extraction():
-    stream_list = [(0, b'AAAAAAAA'), (8, b'AAAAAAA=')]
-    extract_explicit_base64(stream_list)
-    assert len(stream_list) == 1
-    assert stream_list[0][0] == 8
-
-
-def _get_test_file(file_name: str) -> Path:
-    test_dir = Path(Path(__file__).parent, 'data')
-    return Path(test_dir, file_name)

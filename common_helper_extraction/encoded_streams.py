@@ -17,7 +17,7 @@
 '''
 import re
 
-SRECORD_REGEX = b'S0[0-9A-Fa-f]+[\x0d\x0a]+(S[1-6][0-9A-Fa-f]+[\x0d\x0a]+)+S[7-9][0-9A-Fa-f]+'
+SRECORD_REGEX = b'S[0-3][0-9A-Fa-f]+[\x0d\x0a]+(S[1-6][0-9A-Fa-f]+[\x0d\x0a]+)+S[7-9][0-9A-Fa-f]+'
 INTEL_HEX_REGEX = b'(:[0-9A-Fa-f]{10,}[\x0d\x0a]+)+:00000001FF'
 TEKTRONIX_REGEX = b'(/[0-9A-Za-z]+[\x0d\x0a]+)+/00000000'
 TEKTRONIX_EXT_REGEX = b'(%[0-9-A-Za-z]+[\x0d\x0a]+)+(%[0-9A-Za-z]{6}.sec[0-9A-Za-z]+[\x0d\x0a]+)*%[0-9A-Za-z]{2}8[0-9A-Za-z]{4,}'
