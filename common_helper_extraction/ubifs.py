@@ -16,18 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from struct import unpack
+from struct import unpack, error
 
 
-class Ubifs():
+class Ubifs:
     def __init__(self):
         pass
 
     def extract_fs(self, input_data: bytes):
-        pass
+        fs_sections = list()
+        offset = self._get_offset(input_data)
 
-    def _is_magic(self, input_data) -> bool:
-        if unpack('{}{}'.format('<', 'I'), input_data[0:4])[0] == 101718065:
+    def _get_offset(self, input_data: bytes) -> int:
+        offset = 0
+        try:
+            while not self._is_magic(input_data[offset:]):
+                offset += 1
+            return offset
+        except error:
+            return -1
+
+    def _is_magic(self, input_data: bytes) -> bool:
+        if unpack('<I', input_data[0:4])[0] == 101718065:
             return True
         else:
             return False
+
+    def _get_node_size(self, input_data: bytes) -> int:
+        return unpack('<I', input_data[16:20])[0]
