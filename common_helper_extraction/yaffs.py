@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 from struct import unpack, error
+import re
 
 
 class Yaffs:
@@ -30,6 +31,8 @@ class Yaffs:
         self._input_data = input_data
         if self._set_fs_offset() == -1:
             return fs_sections
+        self._endianess = self._get_endianness(self._input_data[0:4], 'I', len(input_data))
+        print(self._offset)
         index = 0
         while index < len(self._input_data):
             chunk = self._input_data[index:]
@@ -48,20 +51,11 @@ class Yaffs:
         self._input_data = self._input_data[self._offset:]
 
     def _get_first_header(self, input_data) -> int:
-        index = 0
-        while not self._is_yaffs_header(input_data[index:]):
-            index += 1
-            if index > len(input_data) - 2048:
-                return -1
-        return index
-
-    def _is_yaffs_header(self, input_data) -> bool:
-        if (input_data[8:10] == b'\xff\xff') and \
-                (input_data[265:268] == b'\xff\xff\xff') and \
-                (input_data[2058:2062] == b'\x00\x00\x00\x00'):
-            self._endianess = self._get_endianness(input_data[0:4], 'I', len(input_data))
-            return True
-        return False
+        first_match = re.search(b'\xff{2}[\w\x00\.\!_\ ]{255}\xff{3}', input_data)
+        if first_match is None:
+            return -1
+        else:
+            return first_match.start(0) - 8
 
     def _get_endianness(self, size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
         if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
