@@ -17,21 +17,28 @@
 '''
 
 from struct import unpack, error
+import re
 
 
 class Ubifs:
     def __init__(self):
         pass
 
-    def extract_fs(self, input_data: bytes):
+    def extract_fs(self, input_data: bytes) -> list:
         fs_sections = list()
         offset = self._get_offset(input_data)
+        fs_stream = input_data[offset:]
+        index = [(m.start(0)) for m in re.finditer(b'\x31\x18\x10\x06', fs_stream)][-1]
+        additional_fill = self._get_node_size(fs_stream[index + 8:])
+        index += self._get_node_size(fs_stream[index:]) + additional_fill
+        fs_sections.append([offset, fs_stream[:index]])
+        return fs_sections
 
-    def _get_offset(self, input_data: bytes) -> int:
+    def _get_offset(self, input_data: bytes, mode: int = 1) -> int:
         offset = 0
         try:
             while not self._is_magic(input_data[offset:]):
-                offset += 1
+                offset += mode
             return offset
         except error:
             return -1
