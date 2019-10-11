@@ -51,7 +51,7 @@ class Yaffs:
         self._input_data = self._input_data[self._offset:]
 
     def _get_first_header(self, input_data) -> int:
-        first_match = re.search(b'\xff{2}[\w\x00\.\!_\ ]{255}\xff{3}', input_data)
+        first_match = re.search(b'\xff{2}[\x00-\x7f]{255}\xff{3}', input_data)
         if first_match is None:
             return -1
         else:
