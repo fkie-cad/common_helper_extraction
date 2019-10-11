@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from struct import unpack, error
+from struct import unpack
 import re
 
 
@@ -26,28 +26,16 @@ class Ubifs:
 
     def extract_fs(self, input_data: bytes) -> list:
         fs_sections = list()
-        offset = self._get_offset(input_data)
+        first_match = re.search(b'\x31\x18\x10\x06', input_data)
+        if first_match is None:
+            return fs_sections
+        offset = first_match.start(0)
         fs_stream = input_data[offset:]
         index = [(m.start(0)) for m in re.finditer(b'\x31\x18\x10\x06', fs_stream)][-1]
         additional_fill = self._get_node_size(fs_stream[index + 8:])
         index += self._get_node_size(fs_stream[index:]) + additional_fill
-        fs_sections.append([offset, fs_stream[:index]])
+        fs_sections.append([offset, input_data[offset:index]])
         return fs_sections
-
-    def _get_offset(self, input_data: bytes, mode: int = 1) -> int:
-        offset = 0
-        try:
-            while not self._is_magic(input_data[offset:]):
-                offset += mode
-            return offset
-        except error:
-            return -1
-
-    def _is_magic(self, input_data: bytes) -> bool:
-        if unpack('<I', input_data[0:4])[0] == 101718065:
-            return True
-        else:
-            return False
 
     def _get_node_size(self, input_data: bytes) -> int:
         return unpack('<I', input_data[16:20])[0]
