@@ -11,6 +11,8 @@ from .helper import get_binary_from_test_file
     ('yaffs2_be_off.img', 1, 7, 14784),
     ('fs.sqfs', 1, 0, 401),
     ('test.ubifs', 1, 0, 1573376),
+    ('jffs2_le.img', 1, 0, 612),
+    ('jffs2_be.img', 1, 0, 612),
     ('combined_fs', 2, 11, 401)
 ])
 def test_fs_extraction(test_file, expected_results, expected_offset, expected_length):
