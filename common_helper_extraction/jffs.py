@@ -22,13 +22,14 @@ from common_helper_extraction.helper_fs import get_node_size
 
 
 def extract_jffs(input_data: bytes) -> list:
+    jffs_regex = b'(\x85\x19)|(\x19\x85)'
     fs_sections = list()
-    first_match = re.search(b'(\x85\x19)|(\x19\x85)', input_data)
+    first_match = re.search(jffs_regex, input_data)
     if first_match is None:
         return fs_sections
     offset = first_match.start(0)
     fs_stream = input_data[offset:]
-    index = [(m.start(0)) for m in re.finditer(b'(\x85\x19)|(\x19\x85)', fs_stream)][-1]
+    index = [(m.start(0)) for m in re.finditer(jffs_regex, fs_stream)][-1]
     index += get_node_size(fs_stream[index:], 4)
     fs_sections.append([offset, input_data[offset:index]])
     return fs_sections
