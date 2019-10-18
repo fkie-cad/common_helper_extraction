@@ -19,6 +19,7 @@ import logging
 from struct import calcsize, unpack
 
 from common_helper_extraction.helper_fs import get_endianness
+from common_helper_extraction.jffs import extract_jffs
 from common_helper_extraction.ubifs import extract_ubifs
 from common_helper_extraction.yaffs import Yaffs
 
@@ -32,6 +33,7 @@ def extract_fs(input_data: bytes) -> list:
     fs_sections.extend(extract_sqfs(input_data))
     fs_sections.extend(Yaffs().extract_fs(input_data))
     fs_sections.extend(extract_ubifs(input_data))
+    fs_sections.extend(extract_jffs(input_data))
     return fs_sections
 
 
