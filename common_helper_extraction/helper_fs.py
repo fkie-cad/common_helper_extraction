@@ -19,8 +19,10 @@
 from struct import unpack
 
 
-def get_node_size(input_data: bytes, offset: int) -> int:
-    return unpack('{}I'.format(get_endianness(input_data[offset:offset + 4], 'I', len(input_data))), input_data[offset:offset + 4])[0]
+def get_data_size(input_data: bytes, offset: int, byteorder: str = None) -> int:
+    if not byteorder:
+        byteorder = get_endianness(input_data[offset:offset + 4], 'I', len(input_data))
+    return unpack('{}I'.format(byteorder), input_data[offset:offset + 4])[0]
 
 
 def get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:

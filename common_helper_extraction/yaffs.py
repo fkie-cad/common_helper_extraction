@@ -16,65 +16,41 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import re
-from struct import error, unpack
+from struct import error
 
-from common_helper_extraction.helper_fs import get_endianness
+from .helper_fs import get_data_size, get_endianness
 
 
-class Yaffs:
-    def __init__(self):
-        self._input_data = None
-        self._number_of_objects = 0
-        self.endianess = None
-        self._offset = None
-
-    def extract_fs(self, input_data: bytes):
-        fs_sections = list()
-        self._input_data = input_data
-        if self.set_fs_offset() == -1:
-            return fs_sections
-        self.endianess = get_endianness(self._input_data[0:4], 'I', len(input_data))
-        index = 0
-        while index < len(self._input_data):
-            index += self.get_next_index(index)
-        fs_sections.append([self._offset, self._input_data[:index]])
+def extract_yaffs(input_data: bytes):
+    yaffs_regex = b'\xff{2}[\x00-\x7f]{255}\xff{3}'
+    fs_sections = list()
+    first_match = re.search(yaffs_regex, input_data)
+    if first_match is None:
         return fs_sections
+    offset = first_match.start(0) - 8
+    fs_stream = input_data[offset:]
+    index = [(m.start(0)) - 8 for m in re.finditer(yaffs_regex, fs_stream)][-1]
+    byteorder = get_endianness(fs_stream[index + 292:index + 296], 'I', len(input_data))
+    if get_data_size(fs_stream[index:], 0) == 1:
+        index += get_chunk_size(byteorder, fs_stream, index)
+    else:
+        index += 2112
+    fs_sections.append([offset, fs_stream[:index]])
+    return fs_sections
 
-    def get_next_index(self, index: int) -> int:
-        chunk = self._input_data[index:]
-        if self.get_object_type(chunk) == 1:
-            if self.confirm_data(chunk, self.get_object_id(chunk), self.get_data_size(chunk)):
-                index += 4224
-        else:
-            index += 2112
-        return index
 
-    def set_fs_offset(self) -> int:
-        self._offset = self.get_first_header(self._input_data)
-        if self._offset == -1:
-            return -1
-        self._input_data = self._input_data[self._offset:]
-        return 0
+def get_chunk_size(byteorder, fs_stream, index):
+    chunk = fs_stream[index:]
+    node_size = get_data_size(chunk, 292, byteorder)
+    object_id = get_data_size(chunk, 2054, byteorder)
+    if confirm_data(chunk, object_id, node_size, byteorder):
+        return 4224
+    return 2112
 
-    @staticmethod
-    def get_first_header(input_data: bytes) -> int:
-        first_match = re.search(b'\xff{2}[\x00-\x7f]{255}\xff{3}', input_data)
-        if first_match is None:
-            return -1
-        return first_match.start(0) - 8
 
-    def get_object_type(self, chunk: bytes) -> int:
-        return unpack('{}{}'.format(self.endianess, 'I'), chunk[0:4])[0]
-
-    def confirm_data(self, chunk: bytes, object_id: int, data_size: int) -> bool:
-        try:
-            return (unpack('{}{}'.format(self.endianess, 'I'), chunk[4166:4170])[0] == object_id) & \
-                   (unpack('{}{}'.format(self.endianess, 'I'), chunk[4174:4178])[0] == data_size)
-        except error:
-            return False
-
-    def get_object_id(self, chunk: bytes) -> int:
-        return unpack('{}{}'.format(self.endianess, 'I'), chunk[2054:2058])[0]
-
-    def get_data_size(self, chunk: bytes) -> int:
-        return unpack('{}{}'.format(self.endianess, 'I'), chunk[292:296])[0]
+def confirm_data(chunk: bytes, object_id: int, data_size: int, byteorder) -> bool:
+    try:
+        return (get_data_size(chunk, 4166, byteorder) == object_id) & \
+               (get_data_size(chunk, 4174, byteorder) == data_size)
+    except error:
+        return False

@@ -18,7 +18,7 @@
 
 import re
 
-from .helper_fs import get_node_size
+from .helper_fs import get_data_size
 
 
 def extract_ubifs(input_data: bytes) -> list:
@@ -30,7 +30,7 @@ def extract_ubifs(input_data: bytes) -> list:
     offset = first_match.start(0)
     fs_stream = input_data[offset:]
     index = [(m.start(0)) for m in re.finditer(ubifs_regex, fs_stream)][-1]
-    additional_fill = get_node_size(fs_stream[index:], 24)
-    index += get_node_size(fs_stream[index:], 16) + additional_fill
+    additional_fill = get_data_size(fs_stream[index:], 24)
+    index += get_data_size(fs_stream[index:], 16) + additional_fill
     fs_sections.append([offset, input_data[offset:index]])
     return fs_sections

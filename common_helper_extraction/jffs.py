@@ -18,7 +18,7 @@
 
 import re
 
-from common_helper_extraction.helper_fs import get_node_size
+from common_helper_extraction.helper_fs import get_data_size
 
 
 def extract_jffs(input_data: bytes) -> list:
@@ -30,6 +30,6 @@ def extract_jffs(input_data: bytes) -> list:
     offset = first_match.start(0)
     fs_stream = input_data[offset:]
     index = [(m.start(0)) for m in re.finditer(jffs_regex, fs_stream)][-1]
-    index += get_node_size(fs_stream[index:], 4)
+    index += get_data_size(fs_stream[index:], 4)
     fs_sections.append([offset, input_data[offset:index]])
     return fs_sections

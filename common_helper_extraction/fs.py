@@ -21,7 +21,7 @@ from struct import calcsize, unpack
 from common_helper_extraction.helper_fs import get_endianness
 from common_helper_extraction.jffs import extract_jffs
 from common_helper_extraction.ubifs import extract_ubifs
-from common_helper_extraction.yaffs import Yaffs
+from common_helper_extraction.yaffs import extract_yaffs
 
 SQFS_MAGIC_STRINGS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
 SQFS_SIZE_BUFFER_OFFSET = 0x28
@@ -31,7 +31,7 @@ SQFS_SIZE_BUFFER_TYPE = 'Q'
 def extract_fs(input_data: bytes) -> list:
     fs_sections = list()
     fs_sections.extend(extract_sqfs(input_data))
-    fs_sections.extend(Yaffs().extract_fs(input_data))
+    fs_sections.extend(extract_yaffs(input_data))
     fs_sections.extend(extract_ubifs(input_data))
     fs_sections.extend(extract_jffs(input_data))
     return fs_sections
