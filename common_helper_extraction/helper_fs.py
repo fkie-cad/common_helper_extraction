@@ -16,14 +16,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+import re
 from struct import unpack
 
 
-def get_node_size(input_data: bytes, offset: int) -> int:
-    return unpack('{}I'.format(get_endianness(input_data[offset:offset + 4], 'I', len(input_data))), input_data[offset:offset + 4])[0]
+def get_data_size(input_data: bytes, offset: int, byteorder: str = None) -> int:
+    if not byteorder:
+        byteorder = get_endianness(input_data[offset:offset + 4], 'I', len(input_data))
+    return unpack('{}I'.format(byteorder), input_data[offset:offset + 4])[0]
 
 
 def get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
     if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
         return '<'
     return '>'
+
+
+def get_index(input_data: bytes, regex: bytes) -> (int, int):
+    first_match = re.search(regex, input_data)
+    if first_match is None:
+        return None, None
+    offset = first_match.start(0)
+    fs_stream = input_data[offset:]
+    index = [(m.start(0)) for m in re.finditer(regex, fs_stream)][-1]
+    return offset, index

@@ -1,6 +1,6 @@
 import pytest
 from common_helper_extraction.fs import extract_fs
-from common_helper_extraction.helper_fs import get_endianness, get_node_size
+from common_helper_extraction.helper_fs import get_data_size, get_endianness
 
 from .helper import get_binary_from_test_file
 
@@ -24,7 +24,7 @@ def test_fs_extraction(test_file, expected_results, expected_offset, expected_le
 
 def test_get_node_size():
     test_bytes = b'\x19\x85\xff\xff\x00\x00\x00\x0c'
-    result = get_node_size(test_bytes, 4)
+    result = get_data_size(test_bytes, 4)
     assert result == 12
 
 
