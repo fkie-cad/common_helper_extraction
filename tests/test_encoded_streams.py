@@ -1,11 +1,9 @@
-from pathlib import Path
-
-from common_helper_files import get_binary_from_file
-
 import pytest
 from common_helper_extraction.encoded_streams import (
-    ASCII85_ADOBE_REGEX, INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, extract_encoded_streams
+    ASCII85_ADOBE_REGEX, INTEL_HEX_REGEX, SRECORD_REGEX, TEKTRONIX_EXT_REGEX, TEKTRONIX_REGEX, BASE64_REGEX, extract_encoded_streams
 )
+
+from .helper import get_binary_from_test_file
 
 
 @pytest.mark.parametrize('input_stream, regex, expected', [
@@ -26,16 +24,14 @@ def test_extraction_function(input_stream, regex, expected):
     ('testfile.tek', TEKTRONIX_REGEX, 0, 185),
     ('hello_fact_user.tekext', TEKTRONIX_EXT_REGEX, 0, 9329),
     ('hello_fact_user.tekext_sec', TEKTRONIX_EXT_REGEX, 0, 8819),
-    ('hello_fact_user.asc85', ASCII85_ADOBE_REGEX, 0, 3814)
+    ('hello_fact_user.asc85', ASCII85_ADOBE_REGEX, 0, 3814),
+    ('hello_fact_user.b64', BASE64_REGEX, 0, 17855),
+    ('combined_test_file', BASE64_REGEX, 21305, 17855),
+    ('explicit_base64.b64', BASE64_REGEX, 1041, 1039)
 ])
 def test_extraction(test_file, regex, expected_offset, expected_size):
-    raw_input = get_binary_from_file(_get_test_file(test_file))
+    raw_input = get_binary_from_test_file(test_file)
     result = extract_encoded_streams(raw_input, regex)
     assert len(result) == 1
     assert result[0][0] == expected_offset
     assert len(result[0][1]) == expected_size
-
-
-def _get_test_file(file_name: str) -> Path:
-    test_dir = Path(Path(__file__).parent, 'data')
-    return Path(test_dir, file_name)
