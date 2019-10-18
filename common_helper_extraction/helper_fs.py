@@ -16,20 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import re
-
-from .helper_fs import get_node_size
+from struct import unpack
 
 
-def extract_ubifs(input_data: bytes) -> list:
-    fs_sections = list()
-    first_match = re.search(b'\x31\x18\x10\x06', input_data)
-    if first_match is None:
-        return fs_sections
-    offset = first_match.start(0)
-    fs_stream = input_data[offset:]
-    index = [(m.start(0)) for m in re.finditer(b'\x31\x18\x10\x06', fs_stream)][-1]
-    additional_fill = get_node_size(fs_stream[index:], 24)
-    index += get_node_size(fs_stream[index:], 16) + additional_fill
-    fs_sections.append([offset, input_data[offset:index]])
-    return fs_sections
+def get_node_size(input_data: bytes, offset: int) -> int:
+    return unpack('{}I'.format(get_endianness(input_data[offset:offset + 4], 'I', len(input_data))), input_data[offset:offset + 4])[0]
+
+
+def get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
+    if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
+        return '<'
+    return '>'

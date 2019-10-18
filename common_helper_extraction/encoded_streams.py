@@ -22,6 +22,7 @@ INTEL_HEX_REGEX = b'(:[0-9A-Fa-f]{10,}[\x0d\x0a]+)+:00000001FF'
 TEKTRONIX_REGEX = b'(/[0-9A-Za-z]+[\x0d\x0a]+)+/00000000'
 TEKTRONIX_EXT_REGEX = b'(%[0-9-A-Za-z]+[\x0d\x0a]+)+(%[0-9A-Za-z]{6}.sec[0-9A-Za-z]+[\x0d\x0a]+)*%[0-9A-Za-z]{2}8[0-9A-Za-z]{4,}'
 ASCII85_ADOBE_REGEX = b'<~([!-u]*[\x0d\x0a]*)+~>'
+BASE64_REGEX = b'(([A-Za-z0-9/+]{4})[\x0d\x0a]{,1}){256,}([A-Za-z0-9/+]{2}==|[A-Za-z0-9/+]{3}=)*'
 
 
 def extract_encoded_streams(input_data: bytes, stream_regex: bytes) -> list:
@@ -30,4 +31,12 @@ def extract_encoded_streams(input_data: bytes, stream_regex: bytes) -> list:
         (match.start(), match.group())
         for match in stream_signature.finditer(input_data)
     ]
+    if stream_regex == BASE64_REGEX:
+        extract_explicit_base64(stream_list)
     return stream_list
+
+
+def extract_explicit_base64(stream_list):
+    for stream_list_item in stream_list:
+        if not stream_list_item[1].endswith(b'==') | stream_list_item[1].endswith(b'='):
+            del stream_list[stream_list_item[0]]
