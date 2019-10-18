@@ -17,6 +17,9 @@
 '''
 import logging
 from struct import calcsize, unpack
+
+from common_helper_extraction.helper_fs import get_endianness
+from common_helper_extraction.ubifs import Ubifs
 from common_helper_extraction.yaffs import Yaffs
 
 SQFS_MAGIC_STRINGS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
@@ -28,6 +31,7 @@ def extract_fs(input_data: bytes) -> list:
     fs_sections = list()
     fs_sections.extend(extract_sqfs(input_data))
     fs_sections.extend(Yaffs().extract_fs(input_data))
+    fs_sections.extend(Ubifs().extract_fs(input_data))
     return fs_sections
 
 
@@ -56,13 +60,7 @@ def _find_next_fs(input_data: bytes, offset: int, header: bytes) -> int:
         return len(input_data)
 
 
-def _get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: int) -> str:
-    if unpack('<{}'.format(size_field_type), size_field_buffer)[0] < file_size:
-        return '<'
-    return '>'
-
-
 def _get_fs_size(input_data: bytes, size_buffer_offset: int, size_buffer_type: str) -> int:
     size_field_buffer = input_data[size_buffer_offset:size_buffer_offset + calcsize(size_buffer_type)]
-    endianness = _get_endianness(size_field_buffer, size_buffer_type, len(input_data))
+    endianness = get_endianness(size_field_buffer, size_buffer_type, len(input_data))
     return unpack('{}{}'.format(endianness, size_buffer_type), size_field_buffer)[0]
