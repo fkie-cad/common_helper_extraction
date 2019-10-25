@@ -24,7 +24,7 @@ def test_fs_extraction(test_file, expected_results, expected_offset, expected_le
 
 def test_get_node_size():
     test_bytes = b'\x19\x85\xff\xff\x00\x00\x00\x0c'
-    result = get_data_size(test_bytes, 4)
+    result = get_data_size(test_bytes, 4, 'I')
     assert result == 12
 
 

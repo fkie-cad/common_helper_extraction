@@ -29,7 +29,7 @@ def extract_yaffs(input_data: bytes):
     offset -= 8
     fs_stream = input_data[offset:]
     byteorder = get_endianness(fs_stream[index + 292:index + 296], 'I', len(input_data))
-    if get_data_size(fs_stream[index:], 0) == 1:
+    if get_data_size(fs_stream[index:], 0, 'I') == 1:
         index += get_chunk_size(byteorder, fs_stream, index)
     else:
         index += 2112
@@ -39,8 +39,8 @@ def extract_yaffs(input_data: bytes):
 
 def get_chunk_size(byteorder, fs_stream, index):
     chunk = fs_stream[index:]
-    node_size = get_data_size(chunk, 292, byteorder)
-    object_id = get_data_size(chunk, 2054, byteorder)
+    node_size = get_data_size(chunk, 292, 'I', byteorder)
+    object_id = get_data_size(chunk, 2054, 'I', byteorder)
     if confirm_data(chunk, object_id, node_size, byteorder):
         return 4224
     return 2112
@@ -48,7 +48,7 @@ def get_chunk_size(byteorder, fs_stream, index):
 
 def confirm_data(chunk: bytes, object_id: int, data_size: int, byteorder) -> bool:
     try:
-        return (get_data_size(chunk, 4166, byteorder) == object_id) & \
-               (get_data_size(chunk, 4174, byteorder) == data_size)
+        return (get_data_size(chunk, 4166, 'I', byteorder) == object_id) & \
+               (get_data_size(chunk, 4174, 'I', byteorder) == data_size)
     except error:
         return False
