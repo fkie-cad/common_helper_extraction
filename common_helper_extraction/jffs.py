@@ -27,5 +27,5 @@ def extract_jffs(input_data: bytes) -> list:
     if (offset, index) == (None, None):
         return fs_sections
     index += get_data_size(input_data[index + offset:], 4, 'I',)
-    fs_sections.append([offset, input_data[offset:index]])
+    fs_sections.extend([offset, input_data[offset:index]])
     return fs_sections

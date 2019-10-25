@@ -33,7 +33,7 @@ def extract_yaffs(input_data: bytes):
         index += get_chunk_size(byteorder, fs_stream, index)
     else:
         index += 2112
-    fs_sections.append([offset, fs_stream[:index]])
+    fs_sections.extend([offset, fs_stream[:index]])
     return fs_sections
 
 

@@ -28,5 +28,5 @@ def extract_ubifs(input_data: bytes) -> list:
         return fs_sections
     additional_fill = get_data_size(input_data[index + offset:], 24, 'I',)
     index += get_data_size(input_data[index + offset:], 16, 'I',) + additional_fill
-    fs_sections.append([offset, input_data[offset:index]])
+    fs_sections.extend([offset, input_data[offset:index]])
     return fs_sections

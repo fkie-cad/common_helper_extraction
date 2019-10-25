@@ -50,7 +50,7 @@ def get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_of
     current_offset = _find_next_fs(input_data, 0, magic_string)
     while current_offset < len(input_data):
         fs_end_offset = current_offset + get_data_size(input_data[current_offset:], buffer_offset, buffer_type)
-        fs_sections.append((current_offset, input_data[current_offset:fs_end_offset]))
+        fs_sections.extend((current_offset, input_data[current_offset:fs_end_offset]))
         current_offset = _find_next_fs(input_data, fs_end_offset, magic_string)
     return fs_sections
 

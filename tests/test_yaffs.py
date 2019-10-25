@@ -14,8 +14,8 @@ from .helper import get_binary_from_test_file
 ])
 def test_extract_fs(test_file, expected_offset, expected_length):
     result = extract_yaffs(get_binary_from_test_file(test_file))
-    assert result[0][0] == expected_offset
-    assert len(result[0][1]) == expected_length
+    assert result[0] == expected_offset
+    assert len(result[1]) == expected_length
 
 
 def test_false_detection_in_ubi_fs():

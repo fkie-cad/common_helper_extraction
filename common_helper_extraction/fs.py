@@ -20,15 +20,9 @@ from .sqfs import extract_sqfs
 from .ubifs import extract_ubifs
 from .yaffs import extract_yaffs
 
-SQFS_MAGIC_STRINGS = [b'sqsh', b'qshs', b'shsq', b'hsqs']
-SQFS_SIZE_BUFFER_OFFSET = 0x28
-SQFS_SIZE_BUFFER_TYPE = 'Q'
+FS_EXTRACTORS = [extract_sqfs, extract_yaffs, extract_ubifs, extract_jffs]
 
 
 def extract_fs(input_data: bytes) -> list:
-    fs_sections = list()
-    fs_sections.extend(extract_sqfs(input_data))
-    fs_sections.extend(extract_yaffs(input_data))
-    fs_sections.extend(extract_ubifs(input_data))
-    fs_sections.extend(extract_jffs(input_data))
+    fs_sections = list(filter(None, [extractor(input_data) for extractor in FS_EXTRACTORS]))  # pylint: disable=W0141
     return fs_sections
