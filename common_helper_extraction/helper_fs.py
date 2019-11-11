@@ -39,7 +39,7 @@ def get_index(input_data: bytes, regex: bytes) -> (int, int):
     first_match = re.search(regex, input_data)
     if first_match is None:
         return None, None
-    offset = first_match.start(0)
+    offset = first_match.start()
     fs_stream = input_data[offset:]
     index = [(m.start(0)) for m in re.finditer(regex, fs_stream)][-1]
     return offset, index
