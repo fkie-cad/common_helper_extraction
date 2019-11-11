@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-from struct import error
 
 from .helper_fs import get_data_size, get_endianness, get_index
 
@@ -51,8 +50,5 @@ def get_chunk_size(byteorder, fs_stream, index):
 
 
 def confirm_data(chunk: bytes, object_id: int, data_size: int, byteorder) -> bool:
-    try:
-        return (get_data_size(chunk, 4166, 'I', byteorder) == object_id) and \
-               (get_data_size(chunk, 4174, 'I', byteorder) == data_size)
-    except error:
-        return False
+    return (get_data_size(chunk, 4166, 'I', byteorder) == object_id) and \
+           (get_data_size(chunk, 4174, 'I', byteorder) == data_size)
