@@ -24,5 +24,5 @@ FS_EXTRACTORS = [extract_sqfs, extract_yaffs, extract_ubifs, extract_jffs]
 
 
 def extract_fs(input_data: bytes) -> list:
-    fs_sections = list(filter(None, [extractor(input_data) for extractor in FS_EXTRACTORS]))  # pylint: disable=W0141
+    fs_sections = [extractor(input_data) for extractor in FS_EXTRACTORS if extractor(input_data)]
     return fs_sections
