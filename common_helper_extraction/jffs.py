@@ -27,6 +27,5 @@ def extract_jffs(input_data: bytes) -> list:
     if (offset, last_node) == (None, None):
         return fs_sections
     last_node += get_data_size(input_data[last_node + offset:], 4, 'I', )
-    print(last_node)
     fs_sections.extend([offset, input_data[offset:last_node]])
     return fs_sections
