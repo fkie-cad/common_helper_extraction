@@ -23,10 +23,10 @@ from .helper_fs import get_data_size, get_index
 def extract_ubifs(input_data: bytes) -> list:
     ubifs_regex = b'\x31\x18\x10\x06'
     fs_sections = list()
-    offset, index = get_index(input_data, ubifs_regex)
-    if (offset, index) == (None, None):
+    offset, last_node = get_index(input_data, ubifs_regex)
+    if (offset, last_node) == (None, None):
         return fs_sections
-    additional_fill = get_data_size(input_data[index + offset:], 24, 'I',)
-    index += get_data_size(input_data[index + offset:], 16, 'I',) + additional_fill
-    fs_sections.extend([offset, input_data[offset:index]])
+    additional_fill = get_data_size(input_data[last_node + offset:], 24, 'I', )
+    last_node += get_data_size(input_data[last_node + offset:], 16, 'I', ) + additional_fill
+    fs_sections.extend([offset, input_data[offset:last_node]])
     return fs_sections

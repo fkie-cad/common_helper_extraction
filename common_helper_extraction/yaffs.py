@@ -23,17 +23,17 @@ from .helper_fs import get_data_size, get_endianness, get_index
 def extract_yaffs(input_data: bytes):
     yaffs_regex = b'\xff{2}[\x00-\x7f]{255}\xff{3}'
     fs_sections = list()
-    offset, index = get_index(input_data, yaffs_regex)
-    if (offset, index) == (None, None):
+    offset, last_node = get_index(input_data, yaffs_regex)
+    if (offset, last_node) == (None, None):
         return fs_sections
     offset -= 8
     fs_stream = input_data[offset:]
-    byteorder = get_endianness(fs_stream[index + 292:index + 296], 'I', len(input_data))
-    if get_data_size(fs_stream[index:], 0, 'I') == 1:
-        index += get_chunk_size(byteorder, fs_stream, index)
+    byteorder = get_endianness(fs_stream[last_node + 292:last_node + 296], 'I', len(input_data))
+    if get_data_size(fs_stream[last_node:], 0, 'I') == 1:
+        last_node += get_chunk_size(byteorder, fs_stream, last_node)
     else:
-        index += 2112
-    fs_sections.extend([offset, fs_stream[:index]])
+        last_node += 2112
+    fs_sections.extend([offset, fs_stream[:last_node]])
     return fs_sections
 
 

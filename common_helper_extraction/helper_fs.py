@@ -41,8 +41,8 @@ def get_index(input_data: bytes, regex: bytes) -> (int, int):
         return None, None
     offset = first_match.start()
     fs_stream = input_data[offset:]
-    index = [m.start() for m in re.finditer(regex, fs_stream)][-1]
-    return offset, index
+    last_node = [m.start() for m in re.finditer(regex, fs_stream)][-1]
+    return offset, last_node
 
 
 def get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:
