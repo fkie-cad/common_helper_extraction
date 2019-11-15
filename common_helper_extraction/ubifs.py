@@ -15,18 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
-
+from typing import List, Tuple
 
 from .helper_fs import get_data_size, get_index
 
 
-def extract_ubifs(input_data: bytes) -> list:
+def extract_ubifs(input_data: bytes) -> List[Tuple[int, bytes]]:
     ubifs_regex = b'\x31\x18\x10\x06'
-    fs_sections = list()
     offset, last_node = get_index(input_data, ubifs_regex)
     if (offset, last_node) == (None, None):
-        return fs_sections
-    additional_fill = get_data_size(input_data[last_node + offset:], 24, 'I', )
-    last_node += get_data_size(input_data[last_node + offset:], 16, 'I', ) + additional_fill
-    fs_sections.extend([offset, input_data[offset:last_node]])
-    return fs_sections
+        return ()
+    additional_fill = get_data_size(input_data[last_node:], 24, 'I', )
+    last_node += get_data_size(input_data[last_node:], 16, 'I', ) + additional_fill
+    return [(offset, input_data[offset:last_node])]
