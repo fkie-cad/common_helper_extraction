@@ -24,7 +24,7 @@ def extract_ubifs(input_data: bytes) -> List[Tuple[int, bytes]]:
     ubifs_regex = b'\x31\x18\x10\x06'
     offset, last_node = get_index(input_data, ubifs_regex)
     if (offset, last_node) == (None, None):
-        return ()
+        return []
     additional_fill = get_data_size(input_data[last_node:], 24, 'I', )
     last_node += get_data_size(input_data[last_node:], 16, 'I', ) + additional_fill
     return [(offset, input_data[offset:last_node])]

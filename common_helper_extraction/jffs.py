@@ -24,6 +24,6 @@ def extract_jffs(input_data: bytes) -> list:
     jffs_regex = b'(\x85\x19)|(\x19\x85)'
     offset, last_node = get_index(input_data, jffs_regex)
     if (offset, last_node) == (None, None):
-        return ()
+        return []
     last_node += get_data_size(input_data[last_node:], 4, 'I', )
     return [(offset, input_data[offset:last_node])]

@@ -27,7 +27,7 @@ def extract_yaffs(input_data: bytes):
     yaffs_regex = b'\xff{2}[\x00-\x7f]{255}\xff{3}'
     offset, last_node = get_index(input_data, yaffs_regex)
     if (offset, last_node) == (None, None):
-        return ()
+        return []
     offset -= 8
     last_node += FULL_NODE_SIZE
     return [(offset, input_data[offset:last_node])]
