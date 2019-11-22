@@ -17,17 +17,15 @@
 '''
 from typing import List, Tuple
 
-from .jffs import extract_jffs
-from .sqfs import extract_sqfs
-from .ubifs import extract_ubifs
-from .yaffs import extract_yaffs
-
-FS_EXTRACTORS = [extract_sqfs, extract_yaffs, extract_ubifs, extract_jffs]
+from .helper_fs import NoMatchFoundException, find_first_and_last_fs_section, get_data_size
 
 
-def extract_fs(input_data: bytes) -> List[Tuple[int, bytes]]:
-    fs_sections = list()
-    for extractor in FS_EXTRACTORS:
-        output = extractor(input_data)
-        fs_sections.extend(output)
-    return fs_sections
+def extract_ubifs(input_data: bytes) -> List[Tuple[int, bytes]]:
+    ubifs_regex = b'\x31\x18\x10\x06'
+    try:
+        offset, last_node = find_first_and_last_fs_section(input_data, ubifs_regex)
+    except NoMatchFoundException:
+        return []
+    additional_fill = get_data_size(input_data[last_node:], 24, 'I')
+    last_node += get_data_size(input_data[last_node:], 16, 'I') + additional_fill
+    return [(offset, input_data[offset:last_node])]
