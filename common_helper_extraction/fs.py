@@ -24,5 +24,8 @@ FS_EXTRACTORS = [extract_sqfs, extract_yaffs, extract_ubifs, extract_jffs]
 
 
 def extract_fs(input_data: bytes) -> list:
-    fs_sections = [extractor(input_data) for extractor in FS_EXTRACTORS]
+    fs_sections = list()
+    for extractor in FS_EXTRACTORS:
+        output = extractor(input_data)
+        fs_sections.extend(output)
     return fs_sections
