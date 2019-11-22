@@ -15,15 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from typing import List, Tuple
+
+from .helper_fs import NoMatchFoundException, find_first_and_last_fs_section, get_data_size
 
 
-from .helper_fs import get_data_size, get_index
-
-
-def extract_jffs(input_data: bytes) -> list:
+def extract_jffs(input_data: bytes) -> List[Tuple[int, bytes]]:
     jffs_regex = b'(\x85\x19)|(\x19\x85)'
-    offset, last_node = get_index(input_data, jffs_regex)
-    if (offset, last_node) == (None, None):
+    try:
+        offset, last_node = find_first_and_last_fs_section(input_data, jffs_regex)
+    except NoMatchFoundException:
         return []
-    last_node += get_data_size(input_data[last_node:], 4, 'I', )
+    last_node += get_data_size(input_data[last_node:], 4, 'I')
     return [(offset, input_data[offset:last_node])]

@@ -17,14 +17,15 @@
 '''
 from typing import List, Tuple
 
-from .helper_fs import get_data_size, get_index
+from .helper_fs import NoMatchFoundException, find_first_and_last_fs_section, get_data_size
 
 
 def extract_ubifs(input_data: bytes) -> List[Tuple[int, bytes]]:
     ubifs_regex = b'\x31\x18\x10\x06'
-    offset, last_node = get_index(input_data, ubifs_regex)
-    if (offset, last_node) == (None, None):
+    try:
+        offset, last_node = find_first_and_last_fs_section(input_data, ubifs_regex)
+    except NoMatchFoundException:
         return []
-    additional_fill = get_data_size(input_data[last_node:], 24, 'I', )
-    last_node += get_data_size(input_data[last_node:], 16, 'I', ) + additional_fill
+    additional_fill = get_data_size(input_data[last_node:], 24, 'I')
+    last_node += get_data_size(input_data[last_node:], 16, 'I') + additional_fill
     return [(offset, input_data[offset:last_node])]

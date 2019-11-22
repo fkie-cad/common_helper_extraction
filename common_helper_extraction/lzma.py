@@ -17,11 +17,12 @@
 '''
 import logging
 from lzma import LZMAError, decompress
+from typing import List, Tuple
 
 HP_LZMA_HEADER = b'\x39\x00\x00\x00\x02\xff\xff\xff\xff\xff\xff\xff\xff'
 
 
-def extract_lzma_streams(input_data: bytes, header: bytes = HP_LZMA_HEADER) -> list:
+def extract_lzma_streams(input_data: bytes, header: bytes = HP_LZMA_HEADER) -> List[Tuple[int, bytes]]:
     lzma_streams = list()
     stream_offset = _find_next_stream(input_data, 0, header)
     while stream_offset < len(input_data):
@@ -31,7 +32,7 @@ def extract_lzma_streams(input_data: bytes, header: bytes = HP_LZMA_HEADER) -> l
     return lzma_streams
 
 
-def get_decompressed_lzma_streams(compressed_streams: list, *_) -> list:
+def get_decompressed_lzma_streams(compressed_streams: list, *_) -> List[Tuple[int, bytes]]:
     return [(offset, _decompress_lzma_stream(compressed_data)) for offset, compressed_data in compressed_streams]
 
 

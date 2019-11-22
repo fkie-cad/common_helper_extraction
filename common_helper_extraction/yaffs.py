@@ -15,18 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from typing import List, Tuple
 
-from .helper_fs import get_index
+from .helper_fs import NoMatchFoundException, find_first_and_last_fs_section
 
 HALF_NODE_SIZE = 2112
 FULL_NODE_SIZE = 4224
 NODE_SIZE_INDEX = 292
 
 
-def extract_yaffs(input_data: bytes):
+def extract_yaffs(input_data: bytes) -> List[Tuple[int, bytes]]:
     yaffs_regex = b'\xff{2}[\x00-\x7f]{255}\xff{3}'
-    offset, last_node = get_index(input_data, yaffs_regex)
-    if (offset, last_node) == (None, None):
+    try:
+        offset, last_node = find_first_and_last_fs_section(input_data, yaffs_regex)
+    except NoMatchFoundException:
         return []
     offset -= 8
     last_node += FULL_NODE_SIZE

@@ -19,8 +19,13 @@
 import logging
 import re
 from struct import unpack
+from typing import Tuple
 
 BUFFER_SIZE = {'I': 4, 'Q': 8}
+
+
+class NoMatchFoundException(Exception):
+    pass
 
 
 def get_data_size(input_data: bytes, offset: int, size_buffer_type: str, byteorder: str = None) -> int:
@@ -35,13 +40,11 @@ def get_endianness(size_field_buffer: bytes, size_field_type: str, file_size: in
     return '>'
 
 
-def get_index(input_data: bytes, regex: bytes) -> (int, int):
-    first_match = re.search(regex, input_data)
-    if first_match is None:
-        return None, None
-    offset = first_match.start()
-    last_node = [m.start() for m in re.finditer(regex, input_data)][-1]
-    return offset, last_node
+def find_first_and_last_fs_section(input_data: bytes, regex: bytes) -> Tuple[int, int]:
+    section_offsets = [m.start() for m in re.finditer(regex, input_data)]
+    if not section_offsets:
+        raise NoMatchFoundException()
+    return section_offsets[0], section_offsets[-1]
 
 
 def get_fs_sections_with_magic(input_data: bytes, magic_string: bytes, buffer_offset: int, buffer_type: str) -> list:

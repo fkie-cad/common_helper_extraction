@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from typing import List, Tuple
 
 from .helper_fs import get_fs_sections_with_magic
 
@@ -23,7 +24,7 @@ SQFS_SIZE_BUFFER_OFFSET = 0x28
 SQFS_SIZE_BUFFER_TYPE = 'Q'
 
 
-def extract_sqfs(input_data: bytes) -> list:
+def extract_sqfs(input_data: bytes) -> List[Tuple[int, bytes]]:
     fs_sections = list()
     for fs_magic in SQFS_MAGIC_STRINGS:
         fs_sections.extend(get_fs_sections_with_magic(input_data, fs_magic, SQFS_SIZE_BUFFER_OFFSET, SQFS_SIZE_BUFFER_TYPE))

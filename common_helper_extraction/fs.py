@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from typing import List, Tuple
+
 from .jffs import extract_jffs
 from .sqfs import extract_sqfs
 from .ubifs import extract_ubifs
@@ -23,7 +25,7 @@ from .yaffs import extract_yaffs
 FS_EXTRACTORS = [extract_sqfs, extract_yaffs, extract_ubifs, extract_jffs]
 
 
-def extract_fs(input_data: bytes) -> list:
+def extract_fs(input_data: bytes) -> List[Tuple[int, bytes]]:
     fs_sections = list()
     for extractor in FS_EXTRACTORS:
         output = extractor(input_data)
