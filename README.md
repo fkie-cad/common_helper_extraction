@@ -72,3 +72,24 @@ The result is a list of OFFSET, DATA tuples.
 ```python
 [ (OFFSET_1, DATA_1), ... ]
 ```
+
+### extract_fs
+
+Extracts file systems out of a BLOB `input_data`.
+
+`extract_fs(input_data: bytes) -> list`
+
+The result is a list of OFFSET, DATA tuples.
+
+```python
+[ (OFFSET_1, DATA_1), ... ]
+```
+
+The library supports the following file systems:
+
+```sh
+jffs
+sqfs
+ubifs
+yaffs
+```
