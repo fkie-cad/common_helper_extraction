@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "common_helper_extraction"
+version = "1.1.0"
+dependencies = [
+    "common_helper_files @ git+https://github.com/fkie-cad/common_helper_files.git@0.3.0"
+]
+description = "Extraction support functions"
+requires-python = ">=3.10"
+authors = [
+    {name = "Fraunhofer FKIE", email = "firmware-security@fkie.fraunhofer.de"}
+]
+license = "GPL-3.0"
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["common_helper_extraction*"]

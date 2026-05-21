@@ -1,4 +1,4 @@
-from helpers.stream_generator import generate_lzma_stream
+from common_helper_extraction.helpers.stream_generator import generate_lzma_stream
 
 
 def test_generate_lzma_stream():
