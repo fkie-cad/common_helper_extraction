@@ -1,7 +1,7 @@
 import pytest
 from common_helper_extraction.lzma import HP_LZMA_HEADER, extract_lzma_streams,\
     _decompress_lzma_stream, get_decompressed_lzma_streams
-from helpers.stream_generator import generate_lzma_stream
+from common_helper_extraction.helpers.stream_generator import generate_lzma_stream
 
 VALID_LZMA_STREAM = generate_lzma_stream(b'test')
 LZMA_STREAM_WITH_ADDITIONAL_DATA = generate_lzma_stream(b'test with additional data') + b'some useless data at the end'
