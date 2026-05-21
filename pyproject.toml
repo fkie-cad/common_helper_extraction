@@ -18,9 +18,18 @@ readme = "README.md"
 
 [project.optional-dependencies]
 dev = [
-    "pytest"
+    "pytest",
+    "ruff"
 ]
+
+[tool.ruff]
+line-length = 120
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["common_helper_extraction*"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.13",
+]
